@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Commercial Bank Sri Lanka - Transfer Funds</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="theme-color" content="#0054A6">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cb-blue: #0054A6;
+      --cb-light-blue: #0097E0;
+      --cb-bg: #F2F8FF;
+      --cb-dark-bg: #232D46;
+      --cb-green: #18CFA8;
+      --cb-text: #222;
+      --cb-shadow: 0 2px 8px rgba(0,84,166,0.08);
+      --cb-warning: #fffbe7;
+      --cb-warning-text: #c87d09;
+    }
+    html, body {
+      background: var(--cb-bg);
+      color: var(--cb-text);
+      font-family: 'Inter', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      transition: background 0.2s;
+    }
+    a { color: var(--cb-blue); text-decoration: none; }
+    .cb-header {
+      background: var(--cb-blue);
+      padding: 28px 0 16px 0;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,84,166,0.11);
+    }
+    .cb-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+    }
+    .cb-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: #cde8ff;
+      margin-right: 12px;
+      display: inline-block;
+    }
+    .cb-welcome {
+      font-size: 20px;
+      font-weight: 600;
+      margin-right: 10px;
+      letter-spacing: 0.5px;
+    }
+    .cb-badge {
+      background: #fff;
+      color: #0054A6;
+      border-radius: 10px;
+      padding: 3px 12px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .cb-balance-card {
+      background: linear-gradient(90deg, #0054A6 65%, #0097E0 100%);
+      margin: -22px 18px 0 18px;
+      border-radius: 18px;
+      padding: 20px 16px 18px 16px;
+      color: #fff;
+      position: relative;
+      box-shadow: 0 2px 12px rgba(0,84,166,0.08);
+    }
+    .cb-balance-label {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .cb-balance-amount {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .cb-add-money {
+      background: #fff;
+      color: #0054A6;
+      border: none;
+      border-radius: 22px;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 8px 24px;
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      box-shadow: 0 2px 8px rgba(0,151,224,0.12);
+      cursor: pointer;
+    }
+    .cb-card-details {
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+    .cb-steps-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 22px 0 16px 0;
+      margin: 0 auto;
+      max-width: 420px;
+    }
+    .cb-step-indicator {
+      width: 38px;
+      height: 38px;
+      background: #e3eefd;
+      border-radius: 50%;
+      color: var(--cb-blue);
+      font-size: 19px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 38px;
+      box-shadow: 0 2px 6px rgba(0,84,166,0.10);
+    }
+    .cb-step-indicator.active, .cb-step-indicator.completed {
+      background: var(--cb-blue);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,84,166,0.13);
+    }
+    .cb-step-label {
+      font-size: 13px;
+      color: var(--cb-blue);
+      font-weight: 500;
+    }
+    .cb-step-label.active, .cb-step-label.completed {
+      color: var(--cb-blue);
+      font-weight: 700;
+    }
+    .cb-step-container {
+      max-width: 430px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: var(--cb-shadow);
+      padding: 32px 24px;
+      margin-bottom: 24px;
+      min-height: 360px;
+      animation: fadeIn 0.4s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(24px);}
+      to { opacity: 1; transform: none;}
+    }
+    .cb-form-label {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 9px;
+      color: var(--cb-blue);
+    }
+    .cb-form-input, .cb-form-select {
+      width: 100%;
+      padding: 12px 10px;
+      font-size: 16px;
+      border: 1px solid #e3eefd;
+      background: #f4f6fb;
+      color: var(--cb-blue);
+      border-radius: 8px;
+      margin-bottom: 17px;
+      box-sizing: border-box;
+      font-weight: 600;
+      outline: none;
+      transition: border 0.13s;
+    }
+    .cb-form-input:focus, .cb-form-select:focus {
+      border: 1.5px solid var(--cb-blue);
+      background: #e3eefd;
+    }
+    .cb-form-select {
+      cursor: pointer;
+    }
+    .cb-form-btn {
+      width: 100%;
+      background: var(--cb-blue);
+      color: #fff;
+      border: none;
+      border-radius: 22px;
+      padding: 14px 0;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 8px 0 0 0;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,84,166,0.10);
+      transition: all 0.16s;
+    }
+    /* Transaction History */
+    .cb-history-section {
+      background: #fff;
+      border-radius: 18px;
+      margin: 22px 18px 80px 18px;
+      box-shadow: var(--cb-shadow);
+      padding: 18px 16px 18px 16px;
+    }
+    .cb-history-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--cb-blue);
+      margin-bottom: 13px;
+    }
+    .cb-history-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .cb-history-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e3eefd;
+      padding: 10px 0;
+      font-size: 15px;
+    }
+    .cb-history-item:last-child {
+      border-bottom: none;
+    }
+    .cb-history-bank {
+      font-weight: 700;
+      color: var(--cb-blue);
+      margin-right: 12px;
+    }
+    .cb-history-amount {
+      font-weight: 700;
+      color: var(--cb-green);
+      margin-left: 10px;
+    }
+    .cb-history-date {
+      color: var(--cb-light-blue);
+      font-size: 13px;
+      margin-left: 14px;
+    }
+    /* Success Step */
+    .cb-success-section {
+      text-align: center;
+      background: var(--cb-dark-bg);
+      color: #fff;
+      margin: 0 auto 22px auto;
+      border-radius: 18px;
+      padding: 30px 18px 18px 18px;
+      box-shadow: var(--cb-shadow);
+      max-width: 430px;
+    }
+    .cb-success-check {
+      width: 76px;
+      height: 76px;
+      background: var(--cb-green);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      color: #fff;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 22px rgba(24,207,168,0.14);
+    }
+    .cb-success-message {
+      font-size: 29px;
+      font-weight: 600;
+      margin-bottom: 11px;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+    .cb-success-amount {
+      font-size: 37px;
+      font-weight: 700;
+      color: var(--cb-green);
+      margin-bottom: 24px;
+      letter-spacing: 2px;
+    }
+    .cb-action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 36px;
+    }
+    .cb-action-btn {
+      background: #222b3a;
+      border-radius: 16px;
+      padding: 21px 40px;
+      color: #fff;
+      font-size: 21px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border: none;
+      cursor: pointer;
+      min-width: 180px;
+      box-sizing: border-box;
+      transition: background 0.19s;
+    }
+    .cb-action-btn:hover {
+      background: var(--cb-blue);
+    }
+    .cb-action-btn-icon {
+      width: 34px;
+      height: 34px;
+      background: var(--cb-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 24px;
+    }
+    .cb-go-home-btn {
+      background: var(--cb-blue);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 13px 42px;
+      display: block;
+      margin: 32px auto 0 auto;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,84,166,0.10);
+    }
+    /* Warning Notice */
+    .cb-warning {
+      background: var(--cb-warning);
+      color: var(--cb-warning-text);
+      border-radius: 11px;
+      padding: 18px 14px;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 28px 0 18px 0;
+      box-shadow: 0 2px 12px rgba(255, 190, 20, 0.12);
+    }
+    .cb-warning strong { color: var(--cb-warning-text); }
+    .cb-warning span { font-size:15px;font-weight:500;color:#7a5e12;}
+    /* Share Receipt Modal */
+    .cb-modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,84,166,0.09);
+      backdrop-filter: blur(2px);
+      z-index: 200;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .cb-receipt-container {
+      max-width: 430px;
+      margin: 44px auto 0 auto;
+      padding-bottom: 36px;
+      position: relative;
+      background: none;
+    }
+    .cb-receipt-header {
+      display: flex;
+      align-items: center;
+      padding: 22px 0 10px 0;
+      font-size: 23px;
+      font-weight: 700;
+      color: var(--cb-blue);
+      justify-content: center;
+      position: relative;
+    }
+    .cb-receipt-header .cb-back-arrow {
+      position: absolute;
+      left: 20px;
+      font-size: 30px;
+      cursor: pointer;
+      color: var(--cb-green);
+    }
+    .cb-receipt-card {
+      background: var(--cb-dark-bg);
+      border-radius: 24px;
+      padding: 24px 20px 22px 20px;
+      box-shadow: var(--cb-shadow);
+      position: relative;
+      margin-bottom: 30px;
+      color: #fff;
+    }
+    .cb-receipt-logo {
+      font-weight: bold;
+      font-size: 26px;
+      color: var(--cb-blue);
+      margin-bottom: 10px;
+      letter-spacing: 1.8px;
+    }
+    .cb-receipt-title {
+      position: absolute;
+      top: 28px;
+      right: 24px;
+      font-size: 18px;
+      color: var(--cb-green);
+      font-weight: 600;
+      opacity: 0.85;
+    }
+    .cb-receipt-amount {
+      font-size: 35px;
+      font-weight: 700;
+      color: var(--cb-green);
+      margin-bottom: 4px;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-top: 26px;
+    }
+    .cb-receipt-success {
+      font-size: 21px;
+      font-weight: 600;
+      margin-bottom: 2px;
+      color: #fff;
+      text-align: center;
+    }
+    .cb-receipt-date {
+      font-size: 14px;
+      color: #A7A7A7;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .cb-receipt-details {
+      margin-top: 18px;
+      margin-bottom: 14px;
+      font-size: 16px;
+      color: #fff;
+    }
+    .cb-receipt-label {
+      font-size: 15px;
+      color: var(--cb-green);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .cb-receipt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+    .cb-details-label {
+      color: #A7A7A7;
+      font-weight: 500;
+      width: 38%;
+    }
+    .cb-details-value {
+      color: #fff;
+      font-weight: 700;
+      text-align: right;
+      width: 62%;
+    }
+    .cb-transaction-number {
+      font-size: 14px;
+      color: #A7A7A7;
+      margin-bottom: 10px;
+      word-break: break-all;
+      text-align: center;
+    }
+    .cb-receipt-note {
+      margin-top: 14px;
+      font-size: 13px;
+      color: #A7A7A7;
+      line-height: 1.38;
+      text-align: center;
+    }
+    .cb-share-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--cb-dark-bg);
+      padding: 18px 24px 18px 24px;
+      border-top: 1px solid #1A2236;
+      border-radius: 0 0 24px 24px;
+      margin: -28px 10px 0 10px;
+      position: relative;
+    }
+    .cb-share-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      color: var(--cb-green);
+      border: none;
+      font-size: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0 18px;
+    }
+    .cb-share-btn img {
+      width: 24px;
+      height: 24px;
+      filter: invert(58%) sepia(90%) saturate(469%) hue-rotate(125deg) brightness(91%) contrast(88%);
+    }
+    @media (max-width: 600px) {
+      .cb-header-inner, .cb-balance-card, .cb-quick-actions,
+      .cb-step-container, .cb-success-section,
+      .cb-history-section, .cb-receipt-container, .cb-receipt-card, .cb-share-section {
+        margin-left: 4px;
+        margin-right: 4px;
+      }
+      .cb-balance-card {padding: 18px 6px 14px 12px;}
+      .cb-go-home-btn {padding: 13px 10px;}
+      .cb-action-btn {min-width:120px; padding: 14px 6px;}
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <div class="cb-header">
+    <div class="cb-header-inner">
+      <div style="display:flex;align-items:center;">
+        <div class="cb-avatar"></div>
+        <span class="cb-welcome">Welcome, SENAKA PERERA</span>
+        <span class="cb-badge">Gold</span>
+      </div>
+      <div>
+        <span style="font-size:23px;">&#128276;</span>
+      </div>
+    </div>
+  </div>
+  <!-- BALANCE CARD -->
+  <div class="cb-balance-card" id="cbBalanceCard">
+    <div class="cb-balance-label">Available Balance</div>
+    <div class="cb-balance-amount" id="cbBalanceAmount">à¶»à· 2,500,000.00</div>
+    <button class="cb-add-money" onclick="alert('Add money feature coming soon')">+ Add Money</button>
+    <div class="cb-card-details">Commercial Bank Savings â¢ 123456789012</div>
+  </div>
+  <!-- STEPS BAR -->
+  <div class="cb-steps-bar" id="cbStepsBar">
+    <span class="cb-step-indicator active" id="step-ind-1">1</span>
+    <span class="cb-step-label active" id="step-label-1">Recipient</span>
+    <span class="cb-step-indicator" id="step-ind-2">2</span>
+    <span class="cb-step-label" id="step-label-2">Amount</span>
+    <span class="cb-step-indicator" id="step-ind-3">3</span>
+    <span class="cb-step-label" id="step-label-3">Review</span>
+    <span class="cb-step-indicator" id="step-ind-4">4</span>
+    <span class="cb-step-label" id="step-label-4">Success</span>
+  </div>
+  <!-- STEP 1: RECIPIENT -->
+  <div class="cb-step-container" id="step1">
+    <div class="cb-form-label">Select Recipient Bank/Wallet</div>
+    <select class="cb-form-select" id="recipientBankSelect" required>
+      <option value="" disabled selected>Select Bank/Wallet</option>
+      <option value="Commercial Bank">Commercial Bank</option>
+      <option value="People's Bank">People's Bank</option>
+      <option value="Bank of Ceylon">Bank of Ceylon</option>
+      <option value="HNB">HNB</option>
+      <option value="Seylan Bank">Seylan Bank</option>
+      <option value="DFCC Bank">DFCC Bank</option>
+      <option value="NDB Bank">NDB Bank</option>
+      <option value="Sampath Bank">Sampath Bank</option>
+      <option value="NTB">NTB</option>
+      <option value="Cargills Bank">Cargills Bank</option>
+      <option value="FriMi">FriMi</option>
+    </select>
+    <div class="cb-form-label">Recipient Account Number</div>
+    <input class="cb-form-input" id="recipientAccountNumber" type="text" maxlength="12" placeholder="Enter 12-digit Account No." pattern="\d{12}" inputmode="numeric" required>
+    <div class="cb-form-label">Recipient Name</div>
+    <input class="cb-form-input" id="recipientNameInput" maxlength="40" placeholder="Enter Account Name">
+    <button class="cb-form-btn" id="step1NextBtn" disabled>Next</button>
+  </div>
+  <!-- STEP 2: AMOUNT -->
+  <div class="cb-step-container" id="step2" style="display:none;">
+    <div class="cb-form-label">Transfer Amount (à¶»à· 100.00 - à¶»à· 5,000,000.00)</div>
+    <input type="number" class="cb-form-input" id="transferAmountInput" min="100" max="5000000" step="any" placeholder="Enter Amount">
+    <div class="cb-form-label">Remark <span style="font-weight:400;color:#888;">(Optional)</span></div>
+    <input class="cb-form-input" id="transferRemarkInput" maxlength="50" placeholder="What's this for?">
+    <button class="cb-form-btn" id="step2NextBtn" disabled>Next</button>
+  </div>
+  <!-- STEP 3: REVIEW -->
+  <div class="cb-step-container" id="step3" style="display:none;">
+    <div class="cb-form-label" style="margin-bottom:24px;font-size:18px;font-weight:700;color:var(--cb-blue);">Review Transfer</div>
+    <div style="margin-bottom:12px;">
+      <strong>Recipient Name:</strong> <span id="reviewRecipientName"></span>
+    </div>
+    <div style="margin-bottom:12px;">
+      <strong>Bank/Wallet:</strong> <span id="reviewRecipientBank"></span>
+    </div>
+    <div style="margin-bottom:12px;">
+      <strong>Account Number:</strong> <span id="reviewRecipientAccount"></span>
+    </div>
+    <div style="margin-bottom:12px;">
+      <strong>Amount:</strong> <span id="reviewTransferAmount"></span>
+    </div>
+    <div style="margin-bottom:12px;">
+      <strong>Remark:</strong> <span id="reviewTransferRemark"></span>
+    </div>
+    <button class="cb-form-btn" id="step3NextBtn">Confirm & Transfer</button>
+  </div>
+  <!-- STEP 4: SUCCESS -->
+  <div class="cb-success-section" id="step4" style="display:none;">
+    <div class="cb-success-check">&#10004;</div>
+    <div class="cb-success-message">Transfer successful</div>
+    <div class="cb-success-amount" id="step4Amount">à¶»à· 0.00</div>
+    <!-- Authorization Notice: LKR payment needed -->
+    <div class="cb-warning" id="authNotice">
+      <span style="font-size:21px;">&#9888;&#65039;</span>
+      <span style="margin-left:10px;">
+        <strong>Important:</strong> To complete your transfer and receive money in your bank account, you must pay <span style="color:#0054A6;">$140 (LKR)</span> as authorization fee.
+        <br>
+        <span>If you do not pay, your funds will NOT be credited to your account.</span>
+      </span>
+    </div>
+    <!-- Email Entry and Payment Address -->
+    <div style="margin-bottom:16px;">
+      <input type="email" id="authEmailInput" placeholder="Enter your email" style="width:100%;padding:13px 12px;font-size:17px;border:1.5px solid #e3eefd;border-radius:9px;margin-bottom:12px;font-family:inherit;">
+      <button class="cb-form-btn" style="background:#0054A6;" id="getPaymentAddressBtn">Get Payment Address</button>
+    </div>
+    <div class="cb-action-buttons">
+      <button class="cb-action-btn" id="step4ShareReceiptBtn">
+        <span class="cb-action-btn-icon">&#9675;</span>
+        Share Receipt
+      </button>
+      <button class="cb-action-btn" id="step4ViewDetailsBtn">
+        <span class="cb-action-btn-icon">&#9675;</span>
+        View Details
+      </button>
+    </div>
+    <button class="cb-go-home-btn" id="step4GoHomeBtn">Go Home</button>
+  </div>
+  <!-- SHARE RECEIPT MODAL -->
+  <div class="cb-modal-bg" id="cbReceiptModalBg">
+    <div class="cb-receipt-container">
+      <div class="cb-receipt-header">
+        <span class="cb-back-arrow" onclick="closeCbModal('cbReceiptModalBg')">&#8592;</span>
+        Share Receipt
+      </div>
+      <div class="cb-receipt-card">
+        <div class="cb-receipt-logo">Commercial Bank</div>
+        <div class="cb-receipt-title">Transaction Receipt</div>
+        <div class="cb-receipt-amount" id="receiptAmount">à¶»à· 0.00</div>
+        <div class="cb-receipt-success">Successful</div>
+        <div class="cb-receipt-date" id="receiptDate"></div>
+        <div class="cb-receipt-details">
+          <div class="cb-receipt-label">Recipient Details</div>
+          <div class="cb-receipt-row">
+            <span class="cb-details-label" id="receiptRecipientName"></span>
+            <span class="cb-details-value" id="receiptRecipientBank"></span>
+          </div>
+          <div class="cb-receipt-label">Sender Details</div>
+          <div class="cb-receipt-row">
+            <span class="cb-details-label" id="receiptSenderName">SENAKA PERERA</span>
+            <span class="cb-details-value" id="receiptSenderBank">Commercial Bank | 123456789012</span>
+          </div>
+          <div class="cb-receipt-label">Transaction No.</div>
+          <div class="cb-transaction-number" id="receiptTransactionNo"></div>
+        </div>
+        <div class="cb-receipt-note">
+          Enjoy a better life with Commercial Bank. Free transfers, bill payments, instant loans, and great interest. Licensed by CBSL.
+        </div>
+        <button class="cb-go-home-btn" onclick="closeCbModal('cbReceiptModalBg')">Go Home</button>
+      </div>
+      <div class="cb-share-section">
+        <button class="cb-share-btn" id="shareImageBtn">
+          <img src="https://cdn-icons-png.flaticon.com/512/32/32213.png" alt="Share as image">
+          Share as image
+        </button>
+        <span style="color:#18CFA8; font-size:28px;">|</span>
+        <button class="cb-share-btn" id="sharePdfBtn">
+          <img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="Share as PDF">
+          Share as PDF
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- TRANSACTION HISTORY -->
+  <div class="cb-history-section" id="cbHistorySection">
+    <div class="cb-history-title">Transaction History</div>
+    <ul class="cb-history-list" id="cbHistoryList"></ul>
+  </div>
+  <!-- NAVIGATION BAR -->
+  <div class="cb-nav-bar" style="position:fixed;bottom:0;left:0;width:100%;background:#fff;display:flex;justify-content:space-around;align-items:center;padding:14px 0;box-shadow:0 -2px 8px rgba(0,84,166,0.06);z-index:100;">
+    <div style="text-align:center;color:#0054A6;font-weight:700;">
+      <div>&#8962;</div>
+      <div style="font-size:13px;">Home</div>
+    </div>
+    <div style="text-align:center;color:#0054A6;">
+      <div>&#127942;</div>
+      <div style="font-size:13px;">Rewards</div>
+    </div>
+    <div style="text-align:center;color:#0054A6;">
+      <div>&#128179;</div>
+      <div style="font-size:13px;">Finance</div>
+    </div>
+    <div style="text-align:center;color:#0054A6;">
+      <div>&#128100;</div>
+      <div style="font-size:13px;">Me</div>
+    </div>
+  </div>
+  <script>
+    // App state
+    let cbBalance = 2500000.00;
+    let userName = "SENAKA PERERA";
+    let userAccountNo = "123456789012";
+    let userBank = "Commercial Bank";
+    let transferHistory = [];
+    let transferData = {
+      recipientBank: "",
+      recipientAccount: "",
+      recipientName: "",
+      amount: 0,
+      remark: "",
+      transactionNo: "",
+      date: "",
+    };
+
+    // Transaction History Render
+    function renderCbHistory() {
+      const ul = document.getElementById('cbHistoryList');
+      ul.innerHTML = '';
+      transferHistory.forEach(tx => {
+        const li = document.createElement('li');
+        li.className = 'cb-history-item';
+        li.innerHTML = `
+          <span>
+            <span class="cb-history-bank">${tx.recipientBank}</span>
+            <span>${tx.recipientName}</span>
+            <span class="cb-history-date">${tx.date}</span>
+          </span>
+          <span>
+            <span class="cb-history-amount">à¶»à· ${parseFloat(tx.amount).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+          </span>
+        `;
+        ul.appendChild(li);
+      });
+    }
+    function updateCbBalance() {
+      document.getElementById('cbBalanceAmount').textContent =
+        `à¶»à· ${cbBalance.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+    }
+
+    // Steps navigation
+    function setStep(step) {
+      // hide all
+      for(let i=1;i<=4;i++) {
+        document.getElementById('step'+i).style.display = 'none';
+        document.getElementById('step-ind-'+i).classList.remove('active','completed');
+        document.getElementById('step-label-'+i).classList.remove('active','completed');
+      }
+      for(let i=1;i<step;i++) {
+        document.getElementById('step-ind-'+i).classList.add('completed');
+        document.getElementById('step-label-'+i).classList.add('completed');
+      }
+      document.getElementById('step-ind-'+step).classList.add('active');
+      document.getElementById('step-label-'+step).classList.add('active');
+      document.getElementById('step'+step).style.display = '';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    // Step 1 validation
+    function step1Validate() {
+      const bank = document.getElementById('recipientBankSelect').value;
+      const acc = document.getElementById('recipientAccountNumber').value;
+      const name = document.getElementById('recipientNameInput').value.trim();
+      document.getElementById('step1NextBtn').disabled = !(bank && acc.length === 12 && name.length > 0);
+    }
+    document.getElementById('recipientBankSelect').addEventListener('change', step1Validate);
+    document.getElementById('recipientAccountNumber').addEventListener('input', step1Validate);
+    document.getElementById('recipientNameInput').addEventListener('input', step1Validate);
+    document.getElementById('step1NextBtn').addEventListener('click', function() {
+      transferData.recipientBank = document.getElementById('recipientBankSelect').value;
+      transferData.recipientAccount = document.getElementById('recipientAccountNumber').value;
+      transferData.recipientName = document.getElementById('recipientNameInput').value.trim();
+      setStep(2);
+    });
+
+    // Step 2 validation
+    function step2Validate() {
+      const amt = parseFloat(document.getElementById('transferAmountInput').value);
+      document.getElementById('step2NextBtn').disabled = !(amt >= 100 && amt <= 5000000);
+    }
+    document.getElementById('transferAmountInput').addEventListener('input', step2Validate);
+    document.getElementById('step2NextBtn').addEventListener('click', function() {
+      transferData.amount = parseFloat(document.getElementById('transferAmountInput').value);
+      transferData.remark = document.getElementById('transferRemarkInput').value;
+      setStep(3);
+      // Review page
+      document.getElementById('reviewRecipientName').textContent = transferData.recipientName;
+      document.getElementById('reviewRecipientBank').textContent = transferData.recipientBank;
+      document.getElementById('reviewRecipientAccount').textContent = transferData.recipientAccount;
+      document.getElementById('reviewTransferAmount').textContent = `à¶»à· ${transferData.amount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+      document.getElementById('reviewTransferRemark').textContent = transferData.remark || "-";
+    });
+
+    // Step 3: Confirm
+    document.getElementById('step3NextBtn').addEventListener('click', function() {
+      cbBalance -= transferData.amount;
+      updateCbBalance();
+      transferData.transactionNo = Math.floor(Math.random()*1e16).toString();
+      transferData.date = (new Date()).toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+      transferHistory.unshift({...transferData});
+      renderCbHistory();
+      setStep(4);
+      document.getElementById('step4Amount').textContent = `à¶»à· ${transferData.amount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+    });
+
+    // Step 4: Share/View Details
+    document.getElementById('step4ShareReceiptBtn').onclick = function() {
+      showReceiptModal();
+    };
+    document.getElementById('step4ViewDetailsBtn').onclick = function() {
+      showReceiptModal();
+    };
+    document.getElementById('step4GoHomeBtn').onclick = function() {
+      setStep(1);
+      document.getElementById('recipientBankSelect').selectedIndex = 0;
+      document.getElementById('recipientAccountNumber').value = '';
+      document.getElementById('recipientNameInput').value = '';
+      document.getElementById('transferAmountInput').value = '';
+      document.getElementById('transferRemarkInput').value = '';
+      document.getElementById('step1NextBtn').disabled = true;
+      document.getElementById('step2NextBtn').disabled = true;
+      document.getElementById('authEmailInput').value = '';
+    };
+
+    // Email & Payment address logic
+    document.getElementById('getPaymentAddressBtn').onclick = function() {
+      var email = document.getElementById('authEmailInput').value.trim();
+      if (!email || !email.match(/^\S+@\S+\.\S+$/)) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+      alert('Payment address has been sent to ' + email + '. Please check your email to proceed with LKR $140 payment authorization.');
+      // You may display payment address below or open modal.
+    };
+
+    // Share Receipt Modal
+    function showReceiptModal() {
+      document.getElementById('cbReceiptModalBg').style.display = 'flex';
+      document.getElementById('receiptAmount').textContent =
+        `à¶»à· ${transferData.amount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+      document.getElementById('receiptRecipientName').textContent = transferData.recipientName;
+      document.getElementById('receiptRecipientBank').textContent =
+        `${transferData.recipientBank} | ${transferData.recipientAccount}`;
+      document.getElementById('receiptSenderName').textContent = userName;
+      document.getElementById('receiptSenderBank').textContent = `${userBank} | ${userAccountNo}`;
+      document.getElementById('receiptTransactionNo').textContent = transferData.transactionNo;
+      document.getElementById('receiptDate').textContent = transferData.date;
+      document.getElementById('shareImageBtn').onclick = function() {
+        alert('Share receipt as image to different apps');
+      };
+      document.getElementById('sharePdfBtn').onclick = function() {
+        alert('Share receipt as PDF to different apps');
+      };
+    }
+    function closeCbModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    // Initial rendering
+    updateCbBalance();
+    renderCbHistory();
+    setStep(1);
+  </script>
+</body>
+</html>
